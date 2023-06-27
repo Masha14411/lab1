@@ -1,0 +1,65 @@
+using System;
+
+public class Stack<T>
+{
+    private T[] elements;
+    private int top;
+
+    public Stack(int capacity)
+    {
+        elements = new T[capacity];
+        top = -1;
+    }
+
+    public void Push(T item)
+    {
+        if (top == elements.Length - 1)
+        {
+            throw new StackOverflowException("Stack is full");
+        }
+
+        elements[++top] = item;
+    }
+
+    public T Pop()
+    {
+        if (top == -1)
+        {
+            throw new InvalidOperationException("Stack is empty");
+        }
+
+        return elements[top--];
+    }
+
+    public int Size()
+    {
+        return top + 1;
+    }
+}
+
+public class Program
+{
+    public static void Main()
+    {
+        Stack<int> stack = new Stack<int>(5);
+
+        stack.Push(1);
+        stack.Push(2);
+        stack.Push(3);
+
+        Console.WriteLine("Stack size: " + stack.Size());
+
+        int item1 = stack.Pop();
+        Console.WriteLine("Popped item: " + item1);
+        Console.WriteLine("Stack size: " + stack.Size());
+
+        stack.Push(4);
+        stack.Push(5);
+
+        int item2 = stack.Pop();
+        Console.WriteLine("Popped item: " + item2);
+        Console.WriteLine("Stack size: " + stack.Size());
+
+        Console.ReadLine();
+    }
+}
