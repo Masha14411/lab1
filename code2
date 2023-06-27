@@ -1,0 +1,112 @@
+using System;
+using System.Collections.Generic;
+
+public class MazeSolver
+{
+    private char[,] maze;
+    private int startX;
+    private int startY;
+    private int endX;
+    private int endY;
+    private Stack<(int, int)> path;
+
+    public MazeSolver(char[,] maze, int startX, int startY, int endX, int endY)
+    {
+        this.maze = maze;
+        this.startX = startX;
+        this.startY = startY;
+        this.endX = endX;
+        this.endY = endY;
+        path = new Stack<(int, int)>();
+    }
+
+    public void SolveMaze()
+    {
+        if (DFS(startX, startY))
+        {
+            Console.WriteLine("Path has been found!");
+            MarkPath();
+            PrintMaze();
+        }
+        else
+        {
+            Console.WriteLine("Path has not been found!");
+        }
+    }
+
+    private bool DFS(int x, int y)
+    {
+        if (x < 0 || x >= maze.GetLength(0) || y < 0 || y >= maze.GetLength(1))
+            return false;
+
+        if (maze[x, y] == '#')
+            return false;
+
+        if (maze[x, y] == 'F')
+            return true;
+
+        if (maze[x, y] == '.' || maze[x, y] == 'S')
+        {
+            maze[x, y] = 'x';
+            path.Push((x, y));
+
+            if (DFS(x - 1, y) || DFS(x + 1, y) || DFS(x, y - 1) || DFS(x, y + 1))
+                return true;
+
+            path.Pop();
+            maze[x, y] = '.';
+        }
+
+        return false;
+    }
+
+    private void MarkPath()
+    {
+        foreach (var position in path)
+        {
+            maze[position.Item1, position.Item2] = 'x';
+        }
+    }
+
+    private void PrintMaze()
+    {
+        int rows = maze.GetLength(0);
+        int columns = maze.GetLength(1);
+
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < columns; j++)
+            {
+                Console.Write(maze[i, j]);
+            }
+            Console.WriteLine();
+        }
+    }
+}
+
+public class Program
+{
+    public static void Main()
+    {
+        char[,] maze = {
+            {'#', 'S', '#', '.', '.', '.', '.'},
+            {'#', '.', '#', '.', '#', '#', '.'},
+            {'#', '.', '.', '.', '#', '.', '.'},
+            {'#', '#', '#', '.', '.', '.', '#'},
+            {'#', '.', '.', '.', '.', 'F', '#'},
+            {'#', '.', '#', '.', '.', '#', '.'},
+            {'#', '.', '#', '#', '#', '#', '.'},
+            {'#', '.', '.', '.', '.', '.', '#'}
+        };
+
+        int startX = 0;
+        int startY = 1;
+        int endX = 4;
+        int endY = 5;
+
+        MazeSolver solver = new MazeSolver(maze, startX, startY, endX, endY);
+        solver.SolveMaze();
+
+        Console.ReadLine();
+    }
+}
